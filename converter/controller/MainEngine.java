@@ -5,13 +5,13 @@ import converter.io.Printer;
 
 public class MainEngine {
 
-    public int promptDecimalNumber() {
-        Printer.println("Enter number in decimal system:");
+    public static int promptDecimalNumber() {
+        Printer.print("Enter number in decimal system: ");
         return IOHandler.readInteger();
     }
 
-    public int promptTargetBase() {
-        Printer.println("Enter target base:");
+    public static int promptTargetBase() {
+        Printer.print("Enter target base: ");
         return IOHandler.readInteger();
     }
 }
