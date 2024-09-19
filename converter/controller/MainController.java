@@ -1,6 +1,5 @@
 package converter.controller;
 
-import converter.Main;
 import converter.io.Printer;
 
 public class MainController {
@@ -34,6 +33,7 @@ public class MainController {
             int decimal = MainEngine.promptDecimalNumber();
             int targetBase = MainEngine.promptTargetBase();
             String targetBaseNumber = parseDecimalToTargetBse(decimal, targetBase);
+            Printer.println("Conversion result: " + targetBaseNumber);
         } catch (IllegalArgumentException e) {
             Printer.println(e.getMessage());
         }
@@ -50,15 +50,16 @@ public class MainController {
 
     private void toOption() {
         try {
-            int sourceNumber = MainEngine.promptSourceNumber();
+            String sourceNumber = MainEngine.promptSourceNumber();
             int sourceBase = MainEngine.promptSourceBase();
-            parseSourceNumberToDecimal(sourceNumber, sourceBase);
-
+            String decimalNumber = parseSourceNumberToDecimal(sourceNumber, sourceBase);
+            Printer.println("Conversion to decimal: " + decimalNumber);
         } catch (NumberFormatException e) {
             Printer.println(e.getMessage() + "\n");
         }
     }
 
-    private void parseSourceNumberToDecimal(int sourceNumber, int sourceBase) {
+    private String parseSourceNumberToDecimal(String sourceNumber, int sourceBase) {
+        return "";
     }
 }

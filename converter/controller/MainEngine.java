@@ -21,9 +21,9 @@ public class MainEngine {
         return IOHandler.readInteger();
     }
 
-    public static int promptSourceNumber(){
+    public static String promptSourceNumber(){
         System.out.print("Enter the source number: ");
-        return IOHandler.readInteger();
+        return IOHandler.readNextLine();
     }
 
     public static int promptSourceBase() {
@@ -41,5 +41,17 @@ public class MainEngine {
 
     public static String decimalToHexadecimal(int decimal) {
         return Converter.decimalToHexadecimal(decimal); 
+    }
+
+    public static String binaryToDecimal(String binary) {
+        return String.valueOf(Converter.binaryToDecimal(binary));
+    }
+
+    public static String binaryToOctal(String binary) {
+        return Converter.binaryToOctal(binary);
+    }
+
+    public static String binaryToHexadecimal(String binary) {
+        return Converter.binaryToHexadecimal(binary);
     }
 }

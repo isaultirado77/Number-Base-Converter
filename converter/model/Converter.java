@@ -29,42 +29,23 @@ public class Converter {
 
     // Method to convert a decimal number to hexadecimal
     public static String decimalToHexadecimal(int decimal) {
+        final int blocLength = 4; // Length of the binary bloc for conversion
         String binary = decimalToBinary(decimal); // binary representation of the binary number
 
-        if (binary.length() % 4 != 0) {
-            binary = padBinaryForHexConversion(binary);
+        if (binary.length() % blocLength != 0) {
+            binary = padBinaryForConversion(binary, blocLength);
         }
         return binaryToHexadecimal(binary);
     }
 
     // Method to pad a binary string-number for Hexadecimal conversion
-    private static String padBinaryForHexConversion(String binary) {
+    private static String padBinaryForConversion(String binary, int blocLength) {
         int length = binary.length();
-        int paddingNeeded = 4 - length % 4;
+        int paddingNeeded = blocLength - length % blocLength;
         return "0".repeat(paddingNeeded) + binary;
     }
 
-    // Method to convert a binary number to hexadecimal
-    private static String binaryToHexadecimal(String binary) {
-        StringBuilder sb = new StringBuilder();
-
-        for (int i = 0; i < binary.length(); i += 4) {
-            String subBinary = binary.substring(i, i + 4);
-            int decimal = binaryToDecimal(subBinary);
-            String hex = decimalCharToHexadecimal(decimal);
-            sb.append(hex);
-        }
-        return sb.toString();
-    }
-
-    private static String decimalCharToHexadecimal(int decimal) {
-        if (decimal < 0 || decimal > 15) {
-            return "";
-        }
-        return Integer.toHexString(decimal).toUpperCase();
-    }
-
-    private static int binaryToDecimal(String binary) {
+    public static int binaryToDecimal(String binary) {
 
         int length = binary.length(); // total bits on the binary number
         int decimal = 0;  // decimal number
@@ -80,4 +61,42 @@ public class Converter {
         // return Integer.parseInt(binary, 2); // using Integer wrapper method
     }
 
+    // Method to convert a binary number to octal
+    public static String binaryToOctal(String binary) {
+        final int blocLength = 3; // Length of the binary bloc for conversion
+
+        if (binary.length() % blocLength != 0) {
+            binary = padBinaryForConversion(binary, blocLength);
+        }
+
+        StringBuilder sb = new StringBuilder();
+
+        for (int i = 0; i < binary.length(); i += 3) {
+            String subBinary = binary.substring(i, i + 3); // get a sub-string of length 3
+            int decimal = binaryToDecimal(subBinary); // get the decimal representation of the sub-string
+            sb.append(decimal);
+        }
+        return sb.toString();
+    }
+
+    // Method to convert a binary number to hexadecimal
+    public static String binaryToHexadecimal(String binary) {
+        StringBuilder sb = new StringBuilder();
+
+        for (int i = 0; i < binary.length(); i += 4) {
+            String subBinary = binary.substring(i, i + 4);
+            int decimal = binaryToDecimal(subBinary);
+            String hex = decimalCharToHexadecimal(decimal);
+            sb.append(hex);
+        }
+        return sb.toString();
+    }
+
+    // Method to get the Hexadecimal representation of a given decimal number
+    private static String decimalCharToHexadecimal(int decimal) {
+        if (decimal < 0 || decimal > 15) {
+            return "";
+        }
+        return Integer.toHexString(decimal).toUpperCase();
+    }
 }
