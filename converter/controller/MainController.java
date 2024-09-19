@@ -1,5 +1,6 @@
 package converter.controller;
 
+import converter.Main;
 import converter.io.Printer;
 
 public class MainController {
@@ -32,26 +33,32 @@ public class MainController {
         try {
             int decimal = MainEngine.promptDecimalNumber();
             int targetBase = MainEngine.promptTargetBase();
-            fromDecimalToTargetBse(decimal, targetBase);
-        } catch (NumberFormatException e) {
+            String targetBaseNumber = parseDecimalToTargetBse(decimal, targetBase);
+        } catch (IllegalArgumentException e) {
             Printer.println(e.getMessage());
         }
     }
 
-    private void fromDecimalToTargetBse(int decimal, int targetBase) {
+    private String parseDecimalToTargetBse(int decimal, int targetBase) {
+        return switch (targetBase) {
+            case 2 -> MainEngine.decimalToBinary(decimal);
+            case 8 -> MainEngine.decimalToOctal(decimal);
+            case 16 -> MainEngine.decimalToHexadecimal(decimal);
+            default -> throw new IllegalArgumentException("Error! Incorrect target base. \n");
+        };
     }
 
     private void toOption() {
         try {
             int sourceNumber = MainEngine.promptSourceNumber();
             int sourceBase = MainEngine.promptSourceBase();
-            fromSourceNumberToDecimal(sourceNumber, sourceBase);
+            parseSourceNumberToDecimal(sourceNumber, sourceBase);
 
         } catch (NumberFormatException e) {
             Printer.println(e.getMessage() + "\n");
         }
     }
 
-    private void fromSourceNumberToDecimal(int sourceNumber, int sourceBase) {
+    private void parseSourceNumberToDecimal(int sourceNumber, int sourceBase) {
     }
 }
