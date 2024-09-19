@@ -100,6 +100,7 @@ public class Converter {
         return Integer.toHexString(decimal).toUpperCase();
     }
 
+    // Method to convert an octal number to decimal
     public static String octalToDecimal(String octal) {
         int length = octal.length();
         int number = 0;
@@ -112,6 +113,7 @@ public class Converter {
         return String.valueOf(number);
     }
 
+    // Method to convert a hexadecimal number to decimal
     public static String hexaToDecimal(String hexa) {
         int length = hexa.length();
         int number = 0;

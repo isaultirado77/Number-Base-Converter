@@ -32,14 +32,14 @@ public class MainController {
         try {
             int decimal = MainEngine.promptDecimalNumber();
             int targetBase = MainEngine.promptTargetBase();
-            String targetBaseNumber = parseDecimalToTargetBse(decimal, targetBase);
+            String targetBaseNumber = parseDecimalToTargetBase(decimal, targetBase);
             Printer.println("Conversion result: " + targetBaseNumber);
         } catch (IllegalArgumentException e) {
             Printer.println(e.getMessage());
         }
     }
 
-    private String parseDecimalToTargetBse(int decimal, int targetBase) {
+    private String parseDecimalToTargetBase(int decimal, int targetBase) {
         return switch (targetBase) {
             case 2 -> MainEngine.decimalToBinary(decimal);
             case 8 -> MainEngine.decimalToOctal(decimal);
@@ -52,14 +52,19 @@ public class MainController {
         try {
             String sourceNumber = MainEngine.promptSourceNumber();
             int sourceBase = MainEngine.promptSourceBase();
-            String decimalNumber = parseSourceNumberToDecimal(sourceNumber, sourceBase);
+            String decimalNumber = parseToDecimal(sourceNumber, sourceBase);
             Printer.println("Conversion to decimal: " + decimalNumber);
         } catch (NumberFormatException e) {
             Printer.println(e.getMessage() + "\n");
         }
     }
 
-    private String parseSourceNumberToDecimal(String sourceNumber, int sourceBase) {
-        return "";
+    private String parseToDecimal(String sourceNumber, int sourceBase) {
+        return switch (sourceBase) {
+            case 2 -> MainEngine.binaryToDecimal(sourceNumber);
+            case 8 -> MainEngine.octalToDecimal(sourceNumber);
+            case 16 -> MainEngine.hexaToDecimal(sourceNumber);
+            default -> throw new IllegalArgumentException("Error! Incorrect target base. \n");
+        };
     }
 }

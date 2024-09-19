@@ -54,4 +54,12 @@ public class MainEngine {
     public static String binaryToHexadecimal(String binary) {
         return Converter.binaryToHexadecimal(binary);
     }
+
+    public static String octalToDecimal(String octal) {
+        return Converter.octalToDecimal(octal);
+    }
+
+    public static String hexaToDecimal(String hexa) {
+        return Converter.hexaToDecimal(hexa);
+    }
 }
