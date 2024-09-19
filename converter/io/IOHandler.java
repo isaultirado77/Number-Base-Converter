@@ -26,7 +26,7 @@ public class IOHandler {
         try {
             return Integer.parseInt(readNextLine());
         } catch (NumberFormatException e) {
-            return Integer.MIN_VALUE;
+            throw new NumberFormatException("Error! The input isn't a number. Try it again: ");
         }
     }
 

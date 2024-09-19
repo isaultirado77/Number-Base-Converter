@@ -6,6 +6,11 @@ import converter.model.Converter;
 
 public class MainEngine {
 
+    public static String promptUserOption() {
+        Printer.print("Do you want to convert /from decimal or /to decimal? (To quit type /exit) ");
+        return IOHandler.readNextLine();
+    }
+
     public static int promptDecimalNumber() {
         Printer.print("Enter number in decimal system: ");
         return IOHandler.readInteger();
@@ -14,6 +19,16 @@ public class MainEngine {
     public static int promptTargetBase() {
         Printer.print("Enter target base: ");
         return IOHandler.readInteger();
+    }
+
+    public static String promptSourceNumber(){
+        System.out.print("Enter the source number: ");
+        return IOHandler.readNextLine();
+    }
+
+    public static String promptSourceBase() {
+        Printer.print("Enter the source base: ");
+        return IOHandler.readNextLine();
     }
 
     public static String decimalToBinary(int decimal) {
