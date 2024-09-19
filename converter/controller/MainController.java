@@ -53,7 +53,7 @@ public class MainController {
             String sourceNumber = MainEngine.promptSourceNumber();
             int sourceBase = MainEngine.promptSourceBase();
             String decimalNumber = parseToDecimal(sourceNumber, sourceBase);
-            Printer.printf("Conversion to decimal: %s\n\n", decimalNumber);
+            Printer.printf("Conversion to decimal result: %s\n\n", decimalNumber);
         } catch (NumberFormatException e) {
             Printer.println(e.getMessage() + "\n");
         }
