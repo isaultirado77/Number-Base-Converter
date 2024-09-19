@@ -99,4 +99,27 @@ public class Converter {
         }
         return Integer.toHexString(decimal).toUpperCase();
     }
+
+    public static String octalToDecimal(String octal) {
+        int length = octal.length();
+        int number = 0;
+        for (int i = 0; i < length; i++) {
+            int exponent = length - 1 - i;
+            int coefficient = octal.charAt(i);
+            number += (int) (coefficient * Math.pow(8, exponent));
+        }
+
+        return String.valueOf(number);
+    }
+
+    public static String hexaToDecimal(String hexa) {
+        int length = hexa.length();
+        int number = 0;
+        for (int i = 0; i < length; i++) {
+            int exponent = length - 1 - i;
+            int coefficient = (int) hexa.charAt(i);
+            number += (int) (coefficient * Math.pow(16, exponent));
+        }
+        return String.valueOf(number);
+    }
 }
