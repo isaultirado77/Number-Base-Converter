@@ -21,14 +21,14 @@ public class MainEngine {
         return IOHandler.readInteger();
     }
 
-    public static String promptSourceNumber(){
+    public static int promptSourceNumber(){
         System.out.print("Enter the source number: ");
-        return IOHandler.readNextLine();
+        return IOHandler.readInteger();
     }
 
-    public static String promptSourceBase() {
+    public static int promptSourceBase() {
         Printer.print("Enter the source base: ");
-        return IOHandler.readNextLine();
+        return IOHandler.readInteger();
     }
 
     public static String decimalToBinary(int decimal) {

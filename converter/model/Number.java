@@ -1,19 +1,19 @@
 package converter.model;
 
-public class Data {
+public class Number {
     int decimal;
     String binary;
     String octal;
     String hexadecimal;
 
-    public Data() {
+    public Number() {
         decimal = 0;
         binary = "00";
         octal = "000";
         hexadecimal = "0000";
     }
 
-    public Data(int decimal) {
+    public Number(int decimal) {
         this.decimal = decimal;
     }
 }
