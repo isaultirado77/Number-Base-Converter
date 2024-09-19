@@ -106,7 +106,7 @@ public class Converter {
         int number = 0;
         for (int i = 0; i < length; i++) {
             int exponent = length - 1 - i;
-            int coefficient = octal.charAt(i);
+            int coefficient = Integer.parseInt(String.valueOf(octal.charAt(i)));
             number += (int) (coefficient * Math.pow(8, exponent));
         }
 
@@ -119,7 +119,8 @@ public class Converter {
         int number = 0;
         for (int i = 0; i < length; i++) {
             int exponent = length - 1 - i;
-            int coefficient = (int) hexa.charAt(i);
+            String hexaString = String.valueOf(hexa.charAt(i));
+            int coefficient = Integer.parseInt(hexaString, 16);
             number += (int) (coefficient * Math.pow(16, exponent));
         }
         return String.valueOf(number);

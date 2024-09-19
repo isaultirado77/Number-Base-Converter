@@ -33,7 +33,7 @@ public class MainController {
             int decimal = MainEngine.promptDecimalNumber();
             int targetBase = MainEngine.promptTargetBase();
             String targetBaseNumber = parseDecimalToTargetBase(decimal, targetBase);
-            Printer.println("Conversion result: " + targetBaseNumber);
+            Printer.printf("Conversion result: %s\n\n", targetBaseNumber);
         } catch (IllegalArgumentException e) {
             Printer.println(e.getMessage());
         }
@@ -53,7 +53,7 @@ public class MainController {
             String sourceNumber = MainEngine.promptSourceNumber();
             int sourceBase = MainEngine.promptSourceBase();
             String decimalNumber = parseToDecimal(sourceNumber, sourceBase);
-            Printer.println("Conversion to decimal: " + decimalNumber);
+            Printer.printf("Conversion to decimal: %s\n\n", decimalNumber);
         } catch (NumberFormatException e) {
             Printer.println(e.getMessage() + "\n");
         }
