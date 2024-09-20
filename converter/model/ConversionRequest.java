@@ -1,11 +1,11 @@
 package converter.model;
 
-public class NumberWithSystem {
+public class ConversionRequest {
 
     String representation;
     NumeralSystem numeralSystem;
 
-    public NumberWithSystem(String representation, NumeralSystem numeralSystem) {
+    public ConversionRequest(String representation, NumeralSystem numeralSystem) {
         this.representation = representation;
         this.numeralSystem = numeralSystem;
     }

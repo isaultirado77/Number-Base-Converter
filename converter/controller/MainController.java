@@ -1,18 +1,14 @@
 package converter.controller;
 
-import converter.io.IOHandler;
 import converter.io.Printer;
-import converter.model.NumberWithSystem;
+import converter.model.ConversionRequest;
 import converter.model.NumeralSystem;
-
-import java.math.BigInteger;
 
 public class MainController {
 
     public void start() {
         while (true) {
-            MainEngine.promptSourceTargetBase();
-            String input = IOHandler.readNextLine();
+            String input = MainEngine.promptSourceTargetBase();;
 
             if ("/exit".equalsIgnoreCase(input)) {
                 break;
@@ -43,12 +39,12 @@ public class MainController {
 
     private void handleConversions(NumeralSystem numeralSystem) {
         while (true) {
-            MainEngine.promptNumberToConvert(numeralSystem);
-            String numberInput = IOHandler.readNextLine();
+
+            String numberInput = MainEngine.promptNumberToConvert(numeralSystem);
 
             if ("/back".equalsIgnoreCase(numberInput)) break;
 
-            NumberWithSystem numberWithSystem = new NumberWithSystem(numberInput, numeralSystem);
+            ConversionRequest conversionRequest = new ConversionRequest(numberInput, numeralSystem);
 
             // implement convert number to selected base
         }

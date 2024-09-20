@@ -2,8 +2,8 @@ package converter.model;
 
 public class NumeralSystem {
 
-    private int source;
-    private int target;
+    private final int source;
+    private final int target;
     public static final int MAX_BASE = 36;
     public static final int MIN_BASE = 2;
 
