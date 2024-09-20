@@ -2,6 +2,7 @@ package converter.controller;
 
 import converter.io.IOHandler;
 import converter.io.Printer;
+import converter.model.NumberWithSystem;
 import converter.model.NumeralSystem;
 
 import java.math.BigInteger;
@@ -47,21 +48,9 @@ public class MainController {
 
             if ("/back".equalsIgnoreCase(numberInput)) break;
 
-            String convertedNumber = convertNumber(numberInput, numeralSystem);
-            if (convertedNumber != null) {
-                System.out.println("Conversion result: " + convertedNumber);
-            }
+            NumberWithSystem numberWithSystem = new NumberWithSystem(numberInput, numeralSystem);
+
+            // implement convert number to selected base
         }
     }
-
-    private String convertNumber(String numberInput, NumeralSystem numeralSystem) {
-        try {
-            BigInteger number = new BigInteger(numberInput, numeralSystem.getSource());
-            return number.toString(numeralSystem.getTarget());
-        } catch (NumberFormatException e) {
-            Printer.println("Invalid number! Please enter a valid number for the base.");
-            return null;
-        }
-    }
-
 }
