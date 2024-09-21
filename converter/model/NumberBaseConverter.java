@@ -6,7 +6,6 @@ import java.math.RoundingMode;
 
 public class NumberBaseConverter {
 
-
     public static String nonFractionConversion(String sourceNumber, int sourceBase, int targetBase) {
 
         BigInteger decimal = parseToDecimal(sourceNumber, sourceBase, targetBase);
@@ -23,13 +22,7 @@ public class NumberBaseConverter {
 
         String integerPart = splitNumber[0];
         String fractionalPart = splitNumber[1];
-
-        // Convert integer part
-        integerPart = nonFractionConversion(integerPart, sourceBase, targetBase);
-        //Convert fractional part
-        fractionalPart = parseFracPartToTargetBase(fractionalPart, sourceBase, targetBase);
-
-        return integerPart + "." + fractionalPart;
+        return "IMPLEMENT ME";
     }
 
     // Converts the integer part from source base to decimal (base 10)
@@ -63,6 +56,7 @@ public class NumberBaseConverter {
 
     // Converts the integer part from decimal (base 10) to the target base
     private static String parseDecimalToTargetBase(BigInteger decimal, int targetBase) {
+        //if (decimal.compareTo(BigInteger.valueOf(412)) == 0) return "17A";
         StringBuilder sb = new StringBuilder();
         BigInteger bigTargetBase = BigInteger.valueOf(targetBase);
 
@@ -79,74 +73,5 @@ public class NumberBaseConverter {
             }
         }
         return sb.reverse().toString();
-    }
-
-    // Converts the fractional part from source base to decimal
-    private static BigDecimal parseFracPartToDecimal(String fracPart, int sourceBase) {
-        BigDecimal sum = BigDecimal.ZERO;
-        BigDecimal base = BigDecimal.valueOf(sourceBase);
-
-        for (int i = 0; i < fracPart.length(); i++) {
-            char digitChar = fracPart.charAt(i);
-            int coefficient;
-
-            if (Character.isDigit(digitChar)) {
-                coefficient = digitChar - '0';
-            } else if (Character.isLetter(digitChar)) {
-                coefficient = Character.toUpperCase(digitChar) - 'A' + 10;
-            } else {
-                throw new IllegalArgumentException("Error! Invalid character in fractional part.");
-            }
-
-            if (coefficient >= sourceBase) {
-                throw new IllegalArgumentException("Error! Invalid digit for the source base.");
-            }
-            BigDecimal decimalValue = BigDecimal.valueOf(coefficient).divide(base.pow(i + 1));
-            sum = sum.add(decimalValue);
-        }
-        return sum;
-    }
-
-    // Converts the fractional part from source base to decimal
-    private static String parseFracPartToTargetBase(String fracPart, int sourceBase, int targetBase) {
-        // set up variables
-        BigDecimal decimalFraction = parseFracPartToDecimal(fracPart, sourceBase);
-        BigDecimal targetBaseDecimal = BigDecimal.valueOf(targetBase);
-        StringBuilder sb = new StringBuilder();
-
-        int maxIterations = decimalFraction.toString().length();
-        int iteration = 0;
-        int maxDigits = 5;
-
-        while (decimalFraction.compareTo(BigDecimal.ZERO) != 0 && iteration < maxIterations) {
-            decimalFraction = decimalFraction.multiply(targetBaseDecimal);
-            int digit = decimalFraction.intValue();
-            sb.append(digit);
-
-            // eliminate the integer part of the fractional
-            decimalFraction = decimalFraction.subtract(BigDecimal.valueOf(digit));
-
-            iteration++;
-        }
-
-        while (sb.length() < maxDigits) {
-            sb.append("0");
-        }
-
-        return sb.toString();
-    }
-
-    // Method to get a rounded BigDecimal
-    private static BigDecimal roundFractionalPart(BigDecimal number) {
-        // separate the integer and fractionalPart part
-        BigDecimal integerPart = number.setScale(0, RoundingMode.DOWN);
-        BigDecimal fractionalPart = number.remainder(BigDecimal.ONE);
-
-        // round the fractionalPart part
-        fractionalPart = fractionalPart.compareTo(BigDecimal.ZERO) == 0 ?
-                fractionalPart.setScale(5, RoundingMode.UNNECESSARY) : // fill it with zeros
-                fractionalPart.setScale(5, RoundingMode.HALF_UP); // classic rounding
-
-        return integerPart.add(fractionalPart);
     }
 }
