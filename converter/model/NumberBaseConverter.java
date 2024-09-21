@@ -5,7 +5,7 @@ import java.math.BigInteger;
 public class NumberBaseConverter {
 
 
-    public static String NonFractionConversion(String sourceNumber, int sourceBase, int targetBase){
+    public static String nonFractionConversion(String sourceNumber, int sourceBase, int targetBase){
 
         BigInteger decimal = parseToDecimal(sourceNumber, sourceBase, targetBase);
 
@@ -13,17 +13,18 @@ public class NumberBaseConverter {
         else return parseDecimalToTargetBase(decimal, targetBase);
     }
 
-    public static String FractionConversion(String sourceNumber, int sourceBase, int targetBase) {
+    public static String fractionConversion(String sourceNumber, int sourceBase, int targetBase) {
 
-        String[] splitNumber = sourceNumber.split(".");
+        String[] splitNumber = sourceNumber.split("\\.");
 
         if( splitNumber.length > 2) throw new IllegalArgumentException("");
 
         String integerPart = splitNumber[0];
         String fractionalPart = splitNumber[1];
 
-        integerPart = NonFractionConversion(sourceNumber, sourceBase, targetBase);
-        return "";
+        integerPart = nonFractionConversion(integerPart, sourceBase, targetBase);
+        fractionalPart = parseFracPartToTargetBase(fractionalPart, sourceBase, targetBase);
+        return integerPart + "\\." + fractionalPart;
     }
 
     private static BigInteger parseToDecimal(String sourceNumber, int sourceBase, int targetBase) {
@@ -44,8 +45,7 @@ public class NumberBaseConverter {
             }
 
             if (coefficient >= sourceBase) {
-                String error = String.format("Error! Invalid digit. Source base: %d Target base: %d",
-                        sourceBase, targetBase);
+                String error = String.format("Error! Invalid digit. Source base: %d Target base: %d", sourceBase, targetBase);
                 throw new IllegalArgumentException(error);
             }
 
@@ -74,7 +74,38 @@ public class NumberBaseConverter {
         return sb.reverse().toString();
     }
 
-    private static String fractionalPartToTargetBase(String fracPart, int sourceBase, int targetBase) {
+    private static BigInteger parseFracPartToDecimal(String fracPart, int sourceBase, int targetBase) {
+        BigInteger sum = BigInteger.ZERO;
+        int length = fracPart.length();
+
+        for (int i = 1; i < length; i++) {
+            char digitChar = fracPart.charAt(i);
+            int coefficient;
+
+            // handle valid characters (0-0, A-Z)
+            if (Character.isDigit(digitChar)) {
+                coefficient = digitChar - '0';
+            } else if (Character.isLetter(digitChar)) {
+                coefficient = Character.toUpperCase(digitChar) - 'A' + 10;
+            } else {
+                throw new IllegalArgumentException("Error! Invalid character in source number. ");
+            }
+
+            if (coefficient >= sourceBase) {
+                String error = String.format("Error! Invalid digit. Source base: %d Target base: %d", sourceBase, targetBase);
+                throw new IllegalArgumentException(error);
+            }
+
+            sum = sum.add(BigInteger.valueOf(coefficient).multiply(BigInteger.valueOf(sourceBase).pow(i)));
+        }
+        return sum;
+    }
+
+    private static String parseFracPartToTargetBase(String fracPart, int sourceBase, int targetBase) {
+        BigInteger decimalFracPart = parseFracPartToDecimal(fracPart, sourceBase, targetBase);
+        if (targetBase == 10)  return decimalFracPart.toString();
+
+
 
         return "";
     }

@@ -26,7 +26,7 @@ public class MainEngine {
         int targetBase = request.getTarget();
 
         return sourceNumber.contains(".") ?
-                NumberBaseConverter.FractionConversion(sourceNumber, sourceBase, targetBase) :
-                NumberBaseConverter.NonFractionConversion(sourceNumber, sourceBase, targetBase);
+                NumberBaseConverter.fractionConversion(sourceNumber, sourceBase, targetBase) :
+                NumberBaseConverter.nonFractionConversion(sourceNumber, sourceBase, targetBase);
     }
 }
