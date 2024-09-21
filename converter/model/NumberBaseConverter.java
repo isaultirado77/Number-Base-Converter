@@ -4,17 +4,14 @@ import java.math.BigInteger;
 
 public class NumberBaseConverter {
 
-//    private final String sourceNumber;
-//    private final int sourceBase;
-//    private final int targetBase;
-//
-//    public NumberBaseConverter(ConversionRequest request) {
-//        this.sourceNumber = request.representation;
-//        this.sourceBase = request.getSource();
-//        this.targetBase = request.getTarget();
-//    }
+    public static String executeConversion(ConversionRequest request) {
 
-    private BigInteger parseToDecimal(String sourceNumber, int sourceBase, int targetBase) {
+
+
+        return "";
+    }
+
+    private static String parseToDecimal(String sourceNumber, int sourceBase, int targetBase) {
         BigInteger sum = BigInteger.ZERO;
         int length = sourceNumber.length();
 
@@ -34,16 +31,16 @@ public class NumberBaseConverter {
             if (coefficient >= sourceBase) {
                 String error = String.format("Error! Invalid digit. Source base: %d Target base: %d",
                         sourceBase, targetBase);
-                throw new IllegalArgumentException("");
+                throw new IllegalArgumentException(error);
             }
 
             int exponent = length - i - 1;
             sum = sum.add(BigInteger.valueOf(coefficient).multiply(BigInteger.valueOf(sourceBase).pow(exponent)));
         }
-        return sum;
+        return sum.toString();
     }
 
-    private String parseDecimalToTargetBase(BigInteger decimal, int targetBase) {
+    private static String parseDecimalToTargetBase(BigInteger decimal, int targetBase) {
         StringBuilder sb = new StringBuilder();
         BigInteger bigTargetBase = BigInteger.valueOf(targetBase);
 
@@ -55,7 +52,7 @@ public class NumberBaseConverter {
             if (reminder.compareTo(BigInteger.TEN) < 0) {
                 sb.append(reminder); // the current reminder is 0-9
             } else {
-                // Convert 10-35 to 'A'-'Z'
+                // Convert 10-35 to A-Z
                 sb.append((char) ('A' + reminder.intValue() - 10));
             }
         }
