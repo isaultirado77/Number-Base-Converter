@@ -9,8 +9,7 @@ public class NumberBaseConverter {
     public static String nonFractionConversion(String sourceNumber, int sourceBase, int targetBase) {
 
         BigInteger decimal = parseToDecimal(sourceNumber, sourceBase, targetBase);
-
-        if (sourceNumber.equals("0")) return sourceNumber;
+        if (sourceNumber.equals(BigInteger.ZERO.toString())) return sourceNumber;
         else if (targetBase == 10) return decimal.toString();
         else return parseDecimalToTargetBase(decimal, targetBase);
     }
@@ -19,22 +18,25 @@ public class NumberBaseConverter {
 
         String[] splitNumber = sourceNumber.split("\\.");
 
-        if (splitNumber.length > 2) throw new IllegalArgumentException("");
+        if (splitNumber.length > 2) throw new IllegalArgumentException("Invalid input format.");
 
         String integerPart = splitNumber[0];
         String fractionalPart = splitNumber[1];
 
-        integerPart = nonFractionConversion(sourceNumber, sourceBase, targetBase);
+        // Convert integer part
+        integerPart = nonFractionConversion(integerPart, sourceBase, targetBase);
+        //Convert fractional part
         fractionalPart = parseFracPartToTargetBase(fractionalPart, sourceBase, targetBase);
 
-        System.out.println("A: " + integerPart);
-        System.out.println("B: " + fractionalPart);
+        String decimalString = integerPart + "." + fractionalPart;
 
-        //BigDecimal bigDecimal = new BigDecimal(integerPart + "\\." + fractionalPart);
+        BigDecimal bigDecimal = new BigDecimal(decimalString);
+
         //return bigDecimal.toString();
         return "cok";
     }
 
+    // Converts the integer part from source base to decimal (base 10)
     private static BigInteger parseToDecimal(String sourceNumber, int sourceBase, int targetBase) {
         BigInteger sum = BigInteger.ZERO;
         int length = sourceNumber.length();
@@ -43,7 +45,7 @@ public class NumberBaseConverter {
             char digitChar = sourceNumber.charAt(i);
             int coefficient;
 
-            // handle valid characters (0-0, A-Z)
+            // handle valid characters (0-9, A-Z)
             if (Character.isDigit(digitChar)) {
                 coefficient = digitChar - '0';
             } else if (Character.isLetter(digitChar)) {
@@ -63,6 +65,7 @@ public class NumberBaseConverter {
         return sum;
     }
 
+    // Converts the integer part from decimal (base 10) to the target base
     private static String parseDecimalToTargetBase(BigInteger decimal, int targetBase) {
         StringBuilder sb = new StringBuilder();
         BigInteger bigTargetBase = BigInteger.valueOf(targetBase);
@@ -110,9 +113,27 @@ public class NumberBaseConverter {
 
     // Converts the fractional part from source base to decimal
     private static String parseFracPartToTargetBase(String fracPart, int sourceBase, int targetBase) {
+        // set up variables
         BigDecimal decimalFraction = parseFracPartToDecimal(fracPart, sourceBase);
         BigDecimal targetBaseDecimal = BigDecimal.valueOf(targetBase);
+        StringBuilder sb = new StringBuilder();
 
-        return "blof";
+        int maxIterations = decimalFraction.toString().length();
+        int iteration = 0;
+        BigDecimal epsilon = new BigDecimal("0.00001");
+
+        while (decimalFraction.compareTo(BigDecimal.ZERO) != 0 && iteration < maxIterations) {
+            decimalFraction = decimalFraction.multiply(targetBaseDecimal);
+            int digit = decimalFraction.intValue();
+            sb.append(digit);
+            decimalFraction = decimalFraction.subtract(BigDecimal.valueOf(digit));
+
+            if (decimalFraction.compareTo(epsilon) < 0) {
+                break;
+            }
+            iteration++;
+        }
+
+        return sb.toString();
     }
 }
