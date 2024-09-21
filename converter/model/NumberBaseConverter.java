@@ -5,13 +5,17 @@ import java.math.BigInteger;
 public class NumberBaseConverter {
 
     public static String executeConversion(ConversionRequest request) {
+        String sourceNumber = request.getRepresentation();
+        int sourceBase = request.getSource();
+        int targetBase = request.getTarget();
 
+        BigInteger decimal = parseToDecimal(sourceNumber, sourceBase, targetBase);
 
-
-        return "";
+        if (targetBase == 10) return decimal.toString();
+        else return parseDecimalToTargetBase(decimal, targetBase);
     }
 
-    private static String parseToDecimal(String sourceNumber, int sourceBase, int targetBase) {
+    private static BigInteger parseToDecimal(String sourceNumber, int sourceBase, int targetBase) {
         BigInteger sum = BigInteger.ZERO;
         int length = sourceNumber.length();
 
@@ -37,7 +41,7 @@ public class NumberBaseConverter {
             int exponent = length - i - 1;
             sum = sum.add(BigInteger.valueOf(coefficient).multiply(BigInteger.valueOf(sourceBase).pow(exponent)));
         }
-        return sum.toString();
+        return sum;
     }
 
     private static String parseDecimalToTargetBase(BigInteger decimal, int targetBase) {

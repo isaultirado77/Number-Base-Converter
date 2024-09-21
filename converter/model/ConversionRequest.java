@@ -2,8 +2,8 @@ package converter.model;
 
 public class ConversionRequest {
 
-    String representation;
-    NumeralSystem numeralSystem;
+    private final String representation;
+    private final NumeralSystem numeralSystem;
 
     public ConversionRequest(String representation, NumeralSystem numeralSystem) {
         this.representation = representation;
