@@ -2,6 +2,7 @@ package converter.controller;
 
 import converter.io.Printer;
 import converter.model.ConversionRequest;
+import converter.model.NumberBaseConverter;
 import converter.model.NumeralSystem;
 
 public class MainController {
@@ -29,7 +30,7 @@ public class MainController {
             int targetBase = Integer.parseInt(bases[1]);
             return new NumeralSystem(sourceBase, targetBase);
         } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
-            Printer.println("Invalid input! Please enter two valid base numbers.");
+            Printer.println("Invalid input! Please enter two valid base numbers.\n");
             return null;
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -42,11 +43,15 @@ public class MainController {
 
             String numberInput = MainEngine.promptNumberToConvert(numeralSystem);
 
-            if ("/back".equalsIgnoreCase(numberInput)) break;
+            if ("/back".equalsIgnoreCase(numberInput)){
+                Printer.println("");
+                break;
+            }
 
             ConversionRequest conversionRequest = new ConversionRequest(numberInput, numeralSystem);
 
-            // implement convert number to selected base
+            String convertedNumber = NumberBaseConverter.executeConversion(conversionRequest);
+            Printer.printf("Conversion Result: %s\n\n", convertedNumber);
         }
     }
 }
