@@ -1,15 +1,17 @@
 package converter.model;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 
 public class NumberBaseConverter {
 
 
-    public static String nonFractionConversion(String sourceNumber, int sourceBase, int targetBase){
+    public static String nonFractionConversion(String sourceNumber, int sourceBase, int targetBase) {
 
         BigInteger decimal = parseToDecimal(sourceNumber, sourceBase, targetBase);
 
-        if (targetBase == 10) return decimal.toString();
+        if (sourceNumber.equals("0")) return sourceNumber;
+        else if (targetBase == 10) return decimal.toString();
         else return parseDecimalToTargetBase(decimal, targetBase);
     }
 
@@ -17,14 +19,20 @@ public class NumberBaseConverter {
 
         String[] splitNumber = sourceNumber.split("\\.");
 
-        if( splitNumber.length > 2) throw new IllegalArgumentException("");
+        if (splitNumber.length > 2) throw new IllegalArgumentException("");
 
         String integerPart = splitNumber[0];
         String fractionalPart = splitNumber[1];
 
-        integerPart = nonFractionConversion(integerPart, sourceBase, targetBase);
+        integerPart = nonFractionConversion(sourceNumber, sourceBase, targetBase);
         fractionalPart = parseFracPartToTargetBase(fractionalPart, sourceBase, targetBase);
-        return integerPart + "\\." + fractionalPart;
+
+        System.out.println("A: " + integerPart);
+        System.out.println("B: " + fractionalPart);
+
+        //BigDecimal bigDecimal = new BigDecimal(integerPart + "\\." + fractionalPart);
+        //return bigDecimal.toString();
+        return "cok";
     }
 
     private static BigInteger parseToDecimal(String sourceNumber, int sourceBase, int targetBase) {
@@ -74,39 +82,37 @@ public class NumberBaseConverter {
         return sb.reverse().toString();
     }
 
-    private static BigInteger parseFracPartToDecimal(String fracPart, int sourceBase, int targetBase) {
-        BigInteger sum = BigInteger.ZERO;
-        int length = fracPart.length();
+    // Converts the fractional part from source base to decimal
+    private static BigDecimal parseFracPartToDecimal(String fracPart, int sourceBase) {
+        BigDecimal sum = BigDecimal.ZERO;
+        BigDecimal base = BigDecimal.valueOf(sourceBase);
 
-        for (int i = 1; i < length; i++) {
+        for (int i = 0; i < fracPart.length(); i++) {
             char digitChar = fracPart.charAt(i);
             int coefficient;
 
-            // handle valid characters (0-0, A-Z)
             if (Character.isDigit(digitChar)) {
                 coefficient = digitChar - '0';
             } else if (Character.isLetter(digitChar)) {
                 coefficient = Character.toUpperCase(digitChar) - 'A' + 10;
             } else {
-                throw new IllegalArgumentException("Error! Invalid character in source number. ");
+                throw new IllegalArgumentException("Error! Invalid character in fractional part.");
             }
 
             if (coefficient >= sourceBase) {
-                String error = String.format("Error! Invalid digit. Source base: %d Target base: %d", sourceBase, targetBase);
-                throw new IllegalArgumentException(error);
+                throw new IllegalArgumentException("Error! Invalid digit for the source base.");
             }
-
-            sum = sum.add(BigInteger.valueOf(coefficient).multiply(BigInteger.valueOf(sourceBase).pow(i)));
+            BigDecimal decimalValue = BigDecimal.valueOf(coefficient).divide(base.pow(i + 1));
+            sum = sum.add(decimalValue);
         }
         return sum;
     }
 
+    // Converts the fractional part from source base to decimal
     private static String parseFracPartToTargetBase(String fracPart, int sourceBase, int targetBase) {
-        BigInteger decimalFracPart = parseFracPartToDecimal(fracPart, sourceBase, targetBase);
-        if (targetBase == 10)  return decimalFracPart.toString();
+        BigDecimal decimalFraction = parseFracPartToDecimal(fracPart, sourceBase);
+        BigDecimal targetBaseDecimal = BigDecimal.valueOf(targetBase);
 
-
-
-        return "";
+        return "blof";
     }
 }
