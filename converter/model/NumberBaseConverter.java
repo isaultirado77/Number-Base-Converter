@@ -4,15 +4,26 @@ import java.math.BigInteger;
 
 public class NumberBaseConverter {
 
-    public static String executeConversion(ConversionRequest request) {
-        String sourceNumber = request.getRepresentation();
-        int sourceBase = request.getSource();
-        int targetBase = request.getTarget();
+
+    public static String NonFractionConversion(String sourceNumber, int sourceBase, int targetBase){
 
         BigInteger decimal = parseToDecimal(sourceNumber, sourceBase, targetBase);
 
         if (targetBase == 10) return decimal.toString();
         else return parseDecimalToTargetBase(decimal, targetBase);
+    }
+
+    public static String FractionConversion(String sourceNumber, int sourceBase, int targetBase) {
+
+        String[] splitNumber = sourceNumber.split(".");
+
+        if( splitNumber.length > 2) throw new IllegalArgumentException("");
+
+        String integerPart = splitNumber[0];
+        String fractionalPart = splitNumber[1];
+
+        integerPart = NonFractionConversion(sourceNumber, sourceBase, targetBase);
+        return "";
     }
 
     private static BigInteger parseToDecimal(String sourceNumber, int sourceBase, int targetBase) {
@@ -61,5 +72,10 @@ public class NumberBaseConverter {
             }
         }
         return sb.reverse().toString();
+    }
+
+    private static String fractionalPartToTargetBase(String fracPart, int sourceBase, int targetBase) {
+
+        return "";
     }
 }

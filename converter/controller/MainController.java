@@ -50,7 +50,7 @@ public class MainController {
 
             ConversionRequest conversionRequest = new ConversionRequest(numberInput, numeralSystem);
 
-            String convertedNumber = NumberBaseConverter.executeConversion(conversionRequest);
+            String convertedNumber = MainEngine.executeConversion(conversionRequest);
             Printer.printf("Conversion Result: %s\n\n", convertedNumber);
         }
     }
