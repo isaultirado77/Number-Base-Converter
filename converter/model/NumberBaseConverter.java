@@ -2,6 +2,7 @@ package converter.model;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.RoundingMode;
 
 public class NumberBaseConverter {
 
@@ -32,8 +33,9 @@ public class NumberBaseConverter {
 
         BigDecimal bigDecimal = new BigDecimal(decimalString);
 
-        //return bigDecimal.toString();
-        return "cok";
+        bigDecimal = roundFractionalPart(bigDecimal);
+
+        return bigDecimal.toString();
     }
 
     // Converts the integer part from source base to decimal (base 10)
@@ -133,7 +135,20 @@ public class NumberBaseConverter {
             }
             iteration++;
         }
-
         return sb.toString();
+    }
+
+    // Method to get a rounded BigDecimal
+    private static BigDecimal roundFractionalPart(BigDecimal number) {
+        // separate the integer and fractionalPart part
+        BigDecimal integerPart = number.setScale(0, RoundingMode.DOWN);
+        BigDecimal fractionalPart = number.remainder(BigDecimal.ONE);
+
+        if (fractionalPart.compareTo(BigDecimal.ZERO) == 0) return integerPart; // return no decimal point
+
+        // round the fractionalPart part
+        fractionalPart = fractionalPart.setScale(5, RoundingMode.HALF_UP); // classic rounding
+
+        return integerPart.add(fractionalPart);
     }
 }
