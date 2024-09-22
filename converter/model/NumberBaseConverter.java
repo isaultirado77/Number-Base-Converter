@@ -11,7 +11,7 @@ public class NumberBaseConverter {
 
     public static String nonFractionConversion(String sourceNumber, int sourceBase, int targetBase) {
 
-        BigInteger decimal = parseToDecimal(sourceNumber, sourceBase, targetBase);
+        BigInteger decimal = parseIntegerToDecimal(sourceNumber, sourceBase, targetBase);
         if (sourceNumber.equals(BigInteger.ZERO.toString())) return "0";
         else if (targetBase == 10) return decimal.toString();
         else return parseDecimalToTargetBase(decimal, targetBase);
@@ -27,7 +27,7 @@ public class NumberBaseConverter {
         String fractionalPart = splitNumber[1];
 
         // Convert integer part to decimal base
-        integerPart = parseToDecimal(integerPart, sourceBase, targetBase).toString();
+        integerPart = parseIntegerToDecimal(integerPart, sourceBase, targetBase).toString();
 
         // Convert fractional part to decimal base
         fractionalPart = parseFracToDecimal(fractionalPart, sourceBase);
@@ -36,13 +36,11 @@ public class NumberBaseConverter {
         BigDecimal decimal = buildBigDecimal(integerPart, fractionalPart);
         decimal = roundFractionalPart(decimal);
 
-        String converted = parseFracDecimalToTargetBase(decimal, targetBase);
-
-        return converted;
+        return parseFracDecimalToTargetBase(decimal, targetBase);
     }
 
     // Converts the integer part from source base to decimal (base 10)
-    private static BigInteger parseToDecimal(String sourceNumber, int sourceBase, int targetBase) {
+    private static BigInteger parseIntegerToDecimal(String sourceNumber, int sourceBase, int targetBase) {
 
         if (isZero(sourceNumber)) return BigInteger.ZERO;
 
@@ -51,21 +49,9 @@ public class NumberBaseConverter {
 
         for (int i = 0; i < length; i++) {
             char digitChar = sourceNumber.charAt(i);
-            int coefficient;
+            int coefficient = charToInt(digitChar);
 
-            // handle valid characters (0-9, A-Z)
-            if (Character.isDigit(digitChar)) {
-                coefficient = digitChar - '0';
-            } else if (Character.isLetter(digitChar)) {
-                coefficient = Character.toUpperCase(digitChar) - 'A' + 10;
-            } else {
-                throw new IllegalArgumentException("Error! Invalid character in source number. ");
-            }
-
-            if (coefficient >= sourceBase) {
-                String error = String.format("Error! Invalid digit. Source base: %d Target base: %d", sourceBase, targetBase);
-                throw new IllegalArgumentException(error);
-            }
+            if (coefficient >= sourceBase) throw new IllegalArgumentException(String.format("Error! Invalid digit. Source base: %d Target base: %d", sourceBase, targetBase));
 
             int exponent = length - i - 1;
             sum = sum.add(BigInteger.valueOf(coefficient).multiply(BigInteger.valueOf(sourceBase).pow(exponent)));
@@ -86,12 +72,9 @@ public class NumberBaseConverter {
             decimal = decimal.divide(bigTargetBase);
 
             // Convert the reminder to a character in the target base
-            if (reminder.compareTo(BigInteger.TEN) < 0) {
-                sb.append(reminder); // the current reminder is 0-9
-            } else {
-                // Convert 10-35 to A-Z
-                sb.append((char) ('A' + reminder.intValue() - 10));
-            }
+            int digit = reminder.intValue();
+            char charDigit = intToChar(digit);
+            sb.append(charDigit);
         }
         return sb.reverse().toString();
     }
@@ -110,35 +93,13 @@ public class NumberBaseConverter {
             char charDigit = frac.charAt(i); // current char
             int coefficient = charToInt(charDigit); // current coefficient
 
-            if (coefficient >= sourceBase) throw new IllegalArgumentException("Error! Invalid digit for the source base.");
+            if (coefficient >= sourceBase)
+                throw new IllegalArgumentException("Error! Invalid digit for the source base.");
 
             BigDecimal decimalValue = BigDecimal.valueOf(coefficient).divide(base.pow(i + 1), MathContext.DECIMAL128);
             sum = sum.add(decimalValue);
         }
         return sum.toString();
-    }
-
-    private static int charToInt(char c) {
-        if (c >= '0' && c <= '9') {
-            return c - '0';
-        } else if (Character.toUpperCase(c) >= 'A' && Character.toUpperCase(c) <= 'Z') {
-            return Character.toUpperCase(c) - 'A' + 10;
-        } else {
-            throw new IllegalArgumentException("Error! Invalid character in fractional part.");
-        }
-    }
-
-    private static boolean isZero(String number) {
-        if (number == null || number.trim().isEmpty()) {
-            return false;
-        }
-
-        try {
-            BigDecimal decimalNumber = new BigDecimal(number.trim());
-            return decimalNumber.compareTo(BigDecimal.ZERO) == 0;
-        } catch (NumberFormatException e) {
-            return false;
-        }
     }
 
     private static BigDecimal buildBigDecimal(String intP, String fracP) {
@@ -162,7 +123,7 @@ public class NumberBaseConverter {
         // Convert frac part to target Base
         String strFracPart = parseFracPartToTargetBase(fracPart, targetBase);
 
-        return (intPart + "." +  strFracPart).toLowerCase();
+        return (intPart + "." + strFracPart).toLowerCase();
     }
 
     private static String parseFracPartToTargetBase(BigDecimal decPart, int base) {
@@ -187,13 +148,36 @@ public class NumberBaseConverter {
         return sb.toString();
     }
 
+    private static boolean isZero(String number) {
+        if (number == null || number.trim().isEmpty()) {
+            return false;
+        }
+
+        try {
+            BigDecimal decimalNumber = new BigDecimal(number.trim());
+            return decimalNumber.compareTo(BigDecimal.ZERO) == 0;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    private static int charToInt(char ch) {
+        if (Character.isDigit(ch)) {
+            return ch - '0';
+        } else if (Character.isLetter(ch)) {
+            return Character.toUpperCase(ch) - 'A' + 10;
+        } else {
+            throw new IllegalArgumentException("Error! Invalid character: " + ch);
+        }
+    }
+
     private static char intToChar(int value) {
         if (value >= 0 && value <= 9) {
             return (char) (value + '0');
         } else if (value >= 10 && value <= 35) {
             return (char) (value - 10 + 'A');
         } else {
-            throw new IllegalArgumentException("Error! Invalid integer value.");
+            throw new IllegalArgumentException("Error! Invalid integer: " + value);
         }
     }
 }
