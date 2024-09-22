@@ -34,6 +34,10 @@ public class NumberBaseConverter {
         System.out.println("A: " + integerPart);
         System.out.println("B: " + fractionalPart);
 
+        // Get BigDecimal value and round it
+        BigDecimal decimal = buildBigDecimal(integerPart, fractionalPart);
+        decimal = roundFractionalPart(decimal);
+
         return "IMPLEMENT ME";
     }
 
@@ -136,5 +140,19 @@ public class NumberBaseConverter {
         } catch (NumberFormatException e) {
             return false;
         }
+    }
+
+    private static BigDecimal buildBigDecimal(String intP, String fracP) {
+        String BDString = intP + "." + fracP;
+        return new BigDecimal(BDString);
+    }
+
+    private static BigDecimal roundFractionalPart(BigDecimal number) {
+        return number.setScale(PRECISION, RoundingMode.DOWN);
+    }
+
+    private static String fracDecimalToTargetBase(BigDecimal decimal, int targetBase) {
+
+        return "IMPLEMENT ME";
     }
 }
