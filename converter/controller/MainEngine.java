@@ -20,7 +20,7 @@ public class MainEngine {
         return IOHandler.readNextLine();
     }
 
-    public static String executeConversion(ConversionRequest request) {
+    public static String executeConversion(ConversionRequest request) throws IllegalArgumentException{
         String sourceNumber = request.getRepresentation();
         int sourceBase = request.getSource();
         int targetBase = request.getTarget();

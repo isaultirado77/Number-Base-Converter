@@ -2,7 +2,6 @@ package converter.controller;
 
 import converter.io.Printer;
 import converter.model.ConversionRequest;
-import converter.model.NumberBaseConverter;
 import converter.model.NumeralSystem;
 
 public class MainController {
@@ -40,18 +39,21 @@ public class MainController {
 
     private void handleConversions(NumeralSystem numeralSystem) {
         while (true) {
+            try {
 
-            String numberInput = MainEngine.promptNumberToConvert(numeralSystem);
+                String numberInput = MainEngine.promptNumberToConvert(numeralSystem);
 
-            if ("/back".equalsIgnoreCase(numberInput)){
-                Printer.println("");
-                break;
+                if ("/back".equalsIgnoreCase(numberInput)) {
+                    Printer.println("");
+                    break;
+                }
+
+                ConversionRequest conversionRequest = new ConversionRequest(numberInput, numeralSystem);
+                String convertedNumber = MainEngine.executeConversion(conversionRequest);
+                Printer.printf("Conversion Result: %s\n\n", convertedNumber);
+            } catch (Exception e) {
+                Printer.println(e.getMessage() + "\n");
             }
-
-            ConversionRequest conversionRequest = new ConversionRequest(numberInput, numeralSystem);
-
-            String convertedNumber = MainEngine.executeConversion(conversionRequest);
-            Printer.printf("Conversion Result: %s\n\n", convertedNumber);
         }
     }
 }
