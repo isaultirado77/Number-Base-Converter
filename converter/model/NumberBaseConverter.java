@@ -9,7 +9,7 @@ public class NumberBaseConverter {
     public static String nonFractionConversion(String sourceNumber, int sourceBase, int targetBase) {
 
         BigInteger decimal = parseToDecimal(sourceNumber, sourceBase, targetBase);
-        if (sourceNumber.equals(BigInteger.ZERO.toString())) return sourceNumber;
+        if (sourceNumber.equals(BigInteger.ZERO.toString())) return "0";
         else if (targetBase == 10) return decimal.toString();
         else return parseDecimalToTargetBase(decimal, targetBase);
     }
@@ -22,6 +22,14 @@ public class NumberBaseConverter {
 
         String integerPart = splitNumber[0];
         String fractionalPart = splitNumber[1];
+
+        // Convert integer part to decimal base
+        integerPart = integerPart.equals("0") ?  // if the number is 0, return '0' as string
+                "0" :
+                parseToDecimal(integerPart, sourceBase, targetBase).toString();  // else return decimal number toString
+
+        // Convert fractional part to decimal base
+
         return "IMPLEMENT ME";
     }
 
@@ -56,7 +64,6 @@ public class NumberBaseConverter {
 
     // Converts the integer part from decimal (base 10) to the target base
     private static String parseDecimalToTargetBase(BigInteger decimal, int targetBase) {
-        //if (decimal.compareTo(BigInteger.valueOf(412)) == 0) return "17A";
         StringBuilder sb = new StringBuilder();
         BigInteger bigTargetBase = BigInteger.valueOf(targetBase);
 
@@ -73,5 +80,11 @@ public class NumberBaseConverter {
             }
         }
         return sb.reverse().toString();
+    }
+
+    // Converts a fractional-part number on any base to decimal (base 10)
+    private static String parseFracToDecimal(String string, int sourceBase) {
+
+        return "IMPLEMENT ME";
     }
 }
