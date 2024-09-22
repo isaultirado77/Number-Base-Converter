@@ -2,6 +2,7 @@ package converter.model;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.MathContext;
 import java.math.RoundingMode;
 
 public class NumberBaseConverter {
@@ -31,14 +32,13 @@ public class NumberBaseConverter {
         // Convert fractional part to decimal base
         fractionalPart = parseFracToDecimal(fractionalPart, sourceBase);
 
-        System.out.println("A: " + integerPart);
-        System.out.println("B: " + fractionalPart);
-
         // Get BigDecimal value and round it
         BigDecimal decimal = buildBigDecimal(integerPart, fractionalPart);
         decimal = roundFractionalPart(decimal);
 
-        return "IMPLEMENT ME";
+        String converted = parseFracDecimalToTargetBase(decimal, targetBase);
+
+        return converted;
     }
 
     // Converts the integer part from source base to decimal (base 10)
@@ -110,20 +110,19 @@ public class NumberBaseConverter {
             char charDigit = frac.charAt(i); // current char
             int coefficient = charToInt(charDigit); // current coefficient
 
-            if (coefficient >= sourceBase)
-                throw new IllegalArgumentException("Error! Invalid digit for the source base.");
+            if (coefficient >= sourceBase) throw new IllegalArgumentException("Error! Invalid digit for the source base.");
 
-            BigDecimal decimalValue = BigDecimal.valueOf(coefficient).divide(base.pow(i + 1));
+            BigDecimal decimalValue = BigDecimal.valueOf(coefficient).divide(base.pow(i + 1), MathContext.DECIMAL128);
             sum = sum.add(decimalValue);
         }
         return sum.toString();
     }
 
-    public static int charToInt(char c) {
+    private static int charToInt(char c) {
         if (c >= '0' && c <= '9') {
             return c - '0';
         } else if (Character.toUpperCase(c) >= 'A' && Character.toUpperCase(c) <= 'Z') {
-            return c - 'A' + 10;
+            return Character.toUpperCase(c) - 'A' + 10;
         } else {
             throw new IllegalArgumentException("Error! Invalid character in fractional part.");
         }
@@ -143,16 +142,58 @@ public class NumberBaseConverter {
     }
 
     private static BigDecimal buildBigDecimal(String intP, String fracP) {
-        String BDString = intP + "." + fracP;
-        return new BigDecimal(BDString);
+        BigDecimal intPart = new BigDecimal(intP);
+        BigDecimal fracPart = new BigDecimal(fracP);
+        return intPart.add(fracPart);
     }
 
     private static BigDecimal roundFractionalPart(BigDecimal number) {
         return number.setScale(PRECISION, RoundingMode.DOWN);
     }
 
-    private static String fracDecimalToTargetBase(BigDecimal decimal, int targetBase) {
+    private static String parseFracDecimalToTargetBase(BigDecimal decimal, int targetBase) {
+        // Separate integer part from decimal part
+        String intPart = decimal.setScale(0, RoundingMode.DOWN).toString();
+        BigDecimal fracPart = decimal.remainder(BigDecimal.ONE);
 
-        return "IMPLEMENT ME";
+        // Convert int part to target base
+        intPart = parseDecimalToTargetBase(new BigInteger(intPart), targetBase);
+
+        // Convert frac part to target Base
+        String strFracPart = parseFracPartToTargetBase(fracPart, targetBase);
+
+        return (intPart + "." +  strFracPart).toLowerCase();
+    }
+
+    private static String parseFracPartToTargetBase(BigDecimal decPart, int base) {
+        BigDecimal targetBase = BigDecimal.valueOf(base);
+        StringBuilder sb = new StringBuilder();
+        int maxDigits = 5;
+
+        while (maxDigits-- > 0) {
+            decPart = decPart.multiply(targetBase); // multiply current decimal part by the target base
+            // convert current digit to char
+            int digit = decPart.intValue();
+            char charDigit = intToChar(digit);
+            sb.append(charDigit);
+            // Eliminate the integer part of the fractional
+            decPart = decPart.subtract(BigDecimal.valueOf(digit));
+        }
+        // if the decimal part is < 5 digits fill it with zeros
+        while (sb.length() < maxDigits) {
+            sb.append("0");
+        }
+
+        return sb.toString();
+    }
+
+    private static char intToChar(int value) {
+        if (value >= 0 && value <= 9) {
+            return (char) (value + '0');
+        } else if (value >= 10 && value <= 35) {
+            return (char) (value - 10 + 'A');
+        } else {
+            throw new IllegalArgumentException("Error! Invalid integer value.");
+        }
     }
 }
