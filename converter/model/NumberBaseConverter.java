@@ -6,6 +6,8 @@ import java.math.RoundingMode;
 
 public class NumberBaseConverter {
 
+    private static final int PRECISION = 5;
+
     public static String nonFractionConversion(String sourceNumber, int sourceBase, int targetBase) {
 
         BigInteger decimal = parseToDecimal(sourceNumber, sourceBase, targetBase);
@@ -24,17 +26,22 @@ public class NumberBaseConverter {
         String fractionalPart = splitNumber[1];
 
         // Convert integer part to decimal base
-        integerPart = integerPart.equals("0") ?  // if the number is 0, return '0' as string
-                "0" :
-                parseToDecimal(integerPart, sourceBase, targetBase).toString();  // else return decimal number toString
+        integerPart = parseToDecimal(integerPart, sourceBase, targetBase).toString();
 
         // Convert fractional part to decimal base
+        fractionalPart = parseFracToDecimal(fractionalPart, sourceBase);
+
+        System.out.println("A: " + integerPart);
+        System.out.println("B: " + fractionalPart);
 
         return "IMPLEMENT ME";
     }
 
     // Converts the integer part from source base to decimal (base 10)
     private static BigInteger parseToDecimal(String sourceNumber, int sourceBase, int targetBase) {
+
+        if (isZero(sourceNumber)) return BigInteger.ZERO;
+
         BigInteger sum = BigInteger.ZERO;
         int length = sourceNumber.length();
 
@@ -64,6 +71,9 @@ public class NumberBaseConverter {
 
     // Converts the integer part from decimal (base 10) to the target base
     private static String parseDecimalToTargetBase(BigInteger decimal, int targetBase) {
+
+        if (decimal.compareTo(BigInteger.ZERO) == 0) return "0";
+
         StringBuilder sb = new StringBuilder();
         BigInteger bigTargetBase = BigInteger.valueOf(targetBase);
 
@@ -84,6 +94,9 @@ public class NumberBaseConverter {
 
     // Converts a fractional-part number on any base to decimal (base 10)
     private static String parseFracToDecimal(String frac, int sourceBase) {
+
+        if (isZero(frac)) return "0".repeat(PRECISION);
+
         // set up variables
         int length = frac.length(); // length of the decimal part
         BigDecimal sum = BigDecimal.ZERO; // init the sum of the digits
@@ -109,6 +122,19 @@ public class NumberBaseConverter {
             return c - 'A' + 10;
         } else {
             throw new IllegalArgumentException("Error! Invalid character in fractional part.");
+        }
+    }
+
+    private static boolean isZero(String number) {
+        if (number == null || number.trim().isEmpty()) {
+            return false;
+        }
+
+        try {
+            BigDecimal decimalNumber = new BigDecimal(number.trim());
+            return decimalNumber.compareTo(BigDecimal.ZERO) == 0;
+        } catch (NumberFormatException e) {
+            return false;
         }
     }
 }
