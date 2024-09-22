@@ -83,8 +83,32 @@ public class NumberBaseConverter {
     }
 
     // Converts a fractional-part number on any base to decimal (base 10)
-    private static String parseFracToDecimal(String string, int sourceBase) {
+    private static String parseFracToDecimal(String frac, int sourceBase) {
+        // set up variables
+        int length = frac.length(); // length of the decimal part
+        BigDecimal sum = BigDecimal.ZERO; // init the sum of the digits
+        BigDecimal base = BigDecimal.valueOf(sourceBase);
 
-        return "IMPLEMENT ME";
+        for (int i = 0; i < length; i++) {
+            char charDigit = frac.charAt(i); // current char
+            int coefficient = charToInt(charDigit); // current coefficient
+
+            if (coefficient >= sourceBase)
+                throw new IllegalArgumentException("Error! Invalid digit for the source base.");
+
+            BigDecimal decimalValue = BigDecimal.valueOf(coefficient).divide(base.pow(i + 1));
+            sum = sum.add(decimalValue);
+        }
+        return sum.toString();
+    }
+
+    public static int charToInt(char c) {
+        if (c >= '0' && c <= '9') {
+            return c - '0';
+        } else if (Character.toUpperCase(c) >= 'A' && Character.toUpperCase(c) <= 'Z') {
+            return c - 'A' + 10;
+        } else {
+            throw new IllegalArgumentException("Error! Invalid character in fractional part.");
+        }
     }
 }
